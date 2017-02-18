@@ -5,7 +5,7 @@
     <title>snow</title>
     <style>
         body {
-            background-color: #1D1D1D;
+            background-color: #6b92b9;
             padding: 30px;
             margin: 0px;
         }
@@ -20,31 +20,68 @@
             font-size: 14px;
             line-height: 24px;
             position: fixed;
-            color: #FFFFFF;
+            color:#fff;
             user-select: none;
             z-index: 1000;
         }
         .snowflake:hover{
             cursor:default;
         }
+        @font-face {
+            font-family: head;
+            src:url(BLACKR.ttf);
+        }
         h1{
-            font-size: 2em;
-            font-family: Arial, Helvetica, sans-serif;
+            font-size: 3em;
+            font-family: Cambria, Georgia, serif;
             padding: 1em;
-            color: lightseagreen;
             margin: 0px;
             text-align: center;
+            color:#ffc;
+            font-weight: bold;
+            text-shadow: #ffc 0 0 0.1em,#ffc 0 0 0.2em,#ffc 0 0 0.3em;
         }
-        p, ol {
-            font-family: "微软雅黑", "Arial Narrow", sans-serif;
-            font-size: 1.5em;
-            color: #CCC;
+        @font-face {
+            font-family: lean;
+            src:url(Niconne-Regular.ttf);
+        }
+        @keyframes flashing {
+            from{
+                color: aqua;
+            }
+            50%{
+                color:lightgreen;
+            }
+            100%{
+                color:lightcoral;
+            }
+        }
+        @keyframes flashing {
+            from{
+                color: aqua;
+            }
+            50%{
+                color:lightgreen;
+            }
+            100%{
+                color:lightcoral;
+            }
+        }
+        ol {
+            width:400px;
+            display: none;
+            margin: 20px auto;
+            padding:10px;
+            animation:flashing 8s linear infinite alternate;
+            background-color: rgba(10,10,10,0.2);
+            box-shadow: 0 0 35px white;
+            font-family: lean, "Arial Narrow", sans-serif;
+            font-size: 2.5em;
             text-align: center;
             list-style-type: none;
         }
         li {
-            margin-bottom: 1em;
-            padding-left: 5px;
+            margin:2px 10px;
         }
     </style>
 </head>
@@ -62,7 +99,7 @@
         <li>wish you enjoy it</li>
     </ol>
 </div>
-
+<script src="jquery-3.1.0.js"></script>
 <script>
     var snowflakes=[];
 
@@ -90,13 +127,13 @@
         this.sign=Math.random()<0.5?-1:1;
 
         this.element.style.opacity=0.1+Math.random();
-        this.element.style.fontSize=12+Math.random()*50+'px';
+        this.element.style.fontSize=12+Math.random()*70+'px';
     }
 
     Snowflake.prototype.update=function () {
         this.counter+=this.speed/5000;
         this.xPos+=this.sign*this.speed*Math.cos(this.counter)/40;
-        this.yPos+=Math.sin(this.counter)/40+this.speed/3;
+        this.yPos+=Math.sin(this.counter)/40+this.speed/5;
 
         setTranslate3DTransform(this.element,Math.round(this.xPos),Math.round(this.yPos));
         if(this.yPos>browserHeight){
@@ -129,6 +166,8 @@
         snowflakeContainer.removeChild(originalSnowflake);
 
         moveSnowflakes();
+
+        $('ol').fadeIn(4000);
     }
     
     function moveSnowflakes() {
