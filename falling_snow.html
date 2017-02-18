@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>snow</title>
+    <style>
+        body {
+            background-color: #1D1D1D;
+            padding: 30px;
+            margin: 0px;
+        }
+        #snowflakeContainer{
+            position: absolute;
+            left: 0px;
+            top:0px;
+        }
+        .snowflake{
+            padding-left: 15px;
+            font-family: Cambria, Georgia, serif;
+            font-size: 14px;
+            line-height: 24px;
+            position: fixed;
+            color: #FFFFFF;
+            user-select: none;
+            z-index: 1000;
+        }
+        .snowflake:hover{
+            cursor:default;
+        }
+        h1{
+            font-size: 2em;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 1em;
+            color: lightseagreen;
+            margin: 0px;
+            text-align: center;
+        }
+        p, ol {
+            font-family: "微软雅黑", "Arial Narrow", sans-serif;
+            font-size: 1.5em;
+            color: #CCC;
+            text-align: center;
+            list-style-type: none;
+        }
+        li {
+            margin-bottom: 1em;
+            padding-left: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="snowflakeContainer">
+    <p class="snowflake">*</p>
+</div>
+
+<div id="content">
+    <h1>this is about snowflakes</h1>
+    <ol>
+        <li>hello di</li>
+        <li>I like snow falling in the sky</li>
+        <li>do you like it?</li>
+        <li>wish you enjoy it</li>
+    </ol>
+</div>
+
+<script>
+    var snowflakes=[];
+
+    var browserWidth;
+    var browserHeight;
+
+    var numberOfSnowflakes=50;
+
+    var resetPosition=false;
+
+    function setup() {
+        window.addEventListener('DOMContentLoaded',generateSnowflakes);
+        window.addEventListener('resize',setResetFlag);
+    }
+
+    setup();
+
+    function Snowflake(element,speed,xPos,yPos){
+        this.element=element;
+        this.speed=speed;
+        this.xPos=xPos;
+        this.yPos=yPos;
+
+        this.counter=0;
+        this.sign=Math.random()<0.5?-1:1;
+
+        this.element.style.opacity=0.1+Math.random();
+        this.element.style.fontSize=12+Math.random()*50+'px';
+    }
+
+    Snowflake.prototype.update=function () {
+        this.counter+=this.speed/5000;
+        this.xPos+=this.sign*this.speed*Math.cos(this.counter)/40;
+        this.yPos+=Math.sin(this.counter)/40+this.speed/3;
+
+        setTranslate3DTransform(this.element,Math.round(this.xPos),Math.round(this.yPos));
+        if(this.yPos>browserHeight){
+            this.yPos=-50;
+        }
+    };
+    
+    function setTranslate3DTransform(element,xPosition,yPosition) {
+        element.style.transform='translate3d('+xPosition+'px,'+yPosition+'px,0)';
+    }
+
+    function generateSnowflakes() {
+        var originalSnowflake=document.querySelector('.snowflake');
+        var snowflakeContainer=originalSnowflake.parentNode;
+
+        browserWidth=document.documentElement.clientWidth;
+        browserHeight=document.documentElement.clientHeight;
+
+        for(var i=0;i<numberOfSnowflakes;i++){
+            var snowflakeClone=originalSnowflake.cloneNode(true);
+            snowflakeContainer.appendChild(snowflakeClone);
+
+            var initialXPos=getPosition(50,browserWidth);
+            var initialYPos = getPosition(50, browserHeight);
+            var speed=5+Math.random()*40;
+
+            var snowflakeObject=new Snowflake(snowflakeClone,speed,initialXPos,initialYPos);
+            snowflakes.push(snowflakeObject);
+        }
+        snowflakeContainer.removeChild(originalSnowflake);
+
+        moveSnowflakes();
+    }
+    
+    function moveSnowflakes() {
+        for(var i=0;i<snowflakes.length;i++){
+            var snowflake=snowflakes[i];
+            snowflake.update();
+        }
+
+        if (resetPosition) {
+            browserWidth = document.documentElement.clientWidth;
+            browserHeight = document.documentElement.clientHeight;
+
+            for (var i = 0; i < snowflakes.length; i++) {
+                var snowflake = snowflakes[i];
+
+                snowflake.xPos = getPosition(50, browserWidth);
+                snowflake.yPos = getPosition(50, browserHeight);
+            }
+
+            resetPosition = false;
+        }
+
+        requestAnimationFrame(moveSnowflakes);
+    }
+
+    function getPosition(offset,size) {
+        return -1*offset+Math.random()*(size+2*offset);
+    }
+
+    function setResetFlag(e) {
+        resetPosition=true;
+    }
+</script>
+</body>
+</html>
